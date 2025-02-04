@@ -22,7 +22,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const hpp = require('hpp');
 const compression = require('compression');
-
+const authRouter = require('./modules/Auth/authRouter');
 
 const limiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 15 minutes
@@ -34,7 +34,7 @@ const limiter = rateLimit({
 
 //* database setup
 require('dotenv').config();
-require('./utils/funcs/connectDB');
+require('./utils/funcs/db');
 //* express app
 const app = express();
 app.use(cookieParser());
@@ -75,6 +75,8 @@ app.route('/').all((_, res) => {
         message: 'welcome home:)',
     });
 });
+
+app.use('/api/v1/auth', authRouter);
 
 //* 404 route
 app.all('*', async (req, res, next) => {
