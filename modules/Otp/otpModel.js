@@ -6,9 +6,9 @@ const otpSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        user: {
-            type: mongoose.Types.ObjectId,
-            ref: 'User',
+        phone: {
+            type: String,
+            required: true,
         },
         expiresAt: {
             type: Date,

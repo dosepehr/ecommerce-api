@@ -12,7 +12,7 @@ exports.sendOtp = expressAsyncHandler(async (req, res, next) => {
 
             const otp = await OTP.create({
                 code: otpCode,
-                user: currentUser._id,
+                phone,
                 expiresAt: new Date(Date.now() + 2 * 60 * 1000),
             });
             return res.status(200).json({ otp });
@@ -35,11 +35,25 @@ exports.sendOtp = expressAsyncHandler(async (req, res, next) => {
         });
         const otp = await OTP.create({
             code: otpCode,
-            user: user._id,
+            phone,
             expiresAt: new Date(Date.now() + 2 * 60 * 1000),
         });
         return res.status(200).json({ otp, user });
     }
 });
 
-exports.verifyOtp = expressAsyncHandler(async (req, res, next) => {});
+exports.verifyOtp = expressAsyncHandler(async (req, res, next) => {
+    const { phone, otp } = req.body;
+
+    const validOtp = await OTP.findOne({
+        phone,
+        code: otp, 
+        expiresAt: { $gt: new Date(Date.now() - 2 * 60 * 1000) }, 
+    });
+
+    if (!validOtp) {
+        return res.status(400).json({ message: 'no user' });
+    } else {
+        return res.status(200).json({ message: 'welcome' });
+    }
+});
