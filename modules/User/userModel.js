@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ['user', 'teacher', 'admin'],
+            enum: ['user', 'seller', 'admin'],
             default: 'user',
         },
         password: {
@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
         toJSON: { virtuals: true },
         toObject: { virtuals: true },
         timestamps: true,
-    },
+    }
 );
 userSchema.pre('save', function (next) {
     if (!this.isModified('password')) return next();
@@ -51,7 +51,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     if (this.passwordChangedAt) {
         const changedTimestamp = parseInt(
             this.passwordChangedAt.getTime() / 1000,
-            10,
+            10
         );
 
         return JWTTimestamp < changedTimestamp;
