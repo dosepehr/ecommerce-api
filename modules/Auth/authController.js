@@ -1,6 +1,7 @@
 const expressAsyncHandler = require('express-async-handler');
 const User = require('../User/userModel');
 const OTP = require('../Otp/otpModel');
+const { signToken, verifyToken } = require('../../utils/funcs/token');
 exports.sendOtp = expressAsyncHandler(async (req, res, next) => {
     const { phone } = req.body;
 
@@ -15,7 +16,9 @@ exports.sendOtp = expressAsyncHandler(async (req, res, next) => {
                 phone,
                 expiresAt: new Date(Date.now() + 2 * 60 * 1000),
             });
-            return res.status(200).json({ otp });
+            const token = signToken({ id: currentUser._id });
+
+            return res.status(200).json({ otp, token });
         } else {
             return res.status(400).json({
                 status: false,
@@ -33,22 +36,23 @@ exports.sendOtp = expressAsyncHandler(async (req, res, next) => {
             password: ' ',
             username: `user-name-${phone}`,
         });
+        const token = signToken({ id: user._id });
+
         const otp = await OTP.create({
             code: otpCode,
             phone,
             expiresAt: new Date(Date.now() + 2 * 60 * 1000),
         });
-        return res.status(200).json({ otp, user });
+        return res.status(200).json({ otp, token });
     }
 });
 
 exports.verifyOtp = expressAsyncHandler(async (req, res, next) => {
     const { phone, otp } = req.body;
-
     const validOtp = await OTP.findOne({
         phone,
-        code: otp, 
-        expiresAt: { $gt: new Date(Date.now() - 2 * 60 * 1000) }, 
+        code: otp,
+        expiresAt: { $gt: new Date(Date.now() - 2 * 60 * 1000) },
     });
 
     if (!validOtp) {
