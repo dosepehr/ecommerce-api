@@ -8,25 +8,22 @@ exports.sendOtp = expressAsyncHandler(async (req, res, next) => {
     if (currentUser) {
         if (currentUser.role == 'not-complete') {
             // re generate otp
-            const otpCode = Math.floor(
-                10000 + Math.random() * 90000
-            )
+            const otpCode = Math.floor(10000 + Math.random() * 90000);
 
             const otp = await OTP.create({
                 code: otpCode,
                 user: currentUser._id,
+                expiresAt: new Date(Date.now() + 2 * 60 * 1000),
             });
-            res.status(200).json({ otp });
+            return res.status(200).json({ otp });
         } else {
-            res.status(400).json({
+            return res.status(400).json({
                 status: false,
                 message: 'User Exists, try to login',
             });
         }
     } else {
-        const otpCode = Math.floor(
-            10000 + Math.random() * 90000
-        )
+        const otpCode = Math.floor(10000 + Math.random() * 90000);
         // generate opt & user together
         const user = await User.create({
             phone,
@@ -39,7 +36,10 @@ exports.sendOtp = expressAsyncHandler(async (req, res, next) => {
         const otp = await OTP.create({
             code: otpCode,
             user: user._id,
+            expiresAt: new Date(Date.now() + 2 * 60 * 1000),
         });
-        res.status(200).json({ otp, user });
+        return res.status(200).json({ otp, user });
     }
 });
+
+exports.verifyOtp = expressAsyncHandler(async (req, res, next) => {});

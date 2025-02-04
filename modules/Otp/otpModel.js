@@ -10,6 +10,10 @@ const otpSchema = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: 'User',
         },
+        expiresAt: {
+            type: Date,
+            required: true,
+        },
     },
     {
         toJSON: { virtuals: true },
