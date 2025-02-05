@@ -70,6 +70,22 @@ exports.completeData = expressAsyncHandler(async (req, res, next) => {
     });
 });
 
+exports.completeDataSeller = expressAsyncHandler(async (req, res, next) => {
+    const { email, name, password } = req.body;
+    const user = req.user;
+    user.email = email;
+    user.name = name;
+    user.password = password;
+    user.role = 'seller';
+    await user.save();
+    const token = signToken({ id: user._id });
+
+    res.status(200).json({
+        message: 'User data updated successfully',
+        token,
+    });
+});
+
 exports.getMe = expressAsyncHandler(async (req, res, next) => {
     const user = req.user;
 
