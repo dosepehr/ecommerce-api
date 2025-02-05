@@ -10,7 +10,7 @@ const shopSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        seller: {
+        user: {
             type: mongoose.Schema.ObjectId,
             ref: 'User',
             required: true,

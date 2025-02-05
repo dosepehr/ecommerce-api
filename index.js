@@ -24,6 +24,7 @@ const hpp = require('hpp');
 const compression = require('compression');
 const authRouter = require('./modules/Auth/authRouter');
 const addressRouter = require('./modules/Address/addressRouter');
+const shopRouter = require('./modules/Shop/shopRouter');
 
 const limiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 15 minutes
@@ -79,6 +80,7 @@ app.route('/').all((_, res) => {
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/addresses', addressRouter);
+app.use('/api/v1/shops', shopRouter);
 
 //* 404 route
 app.all('*', async (req, res, next) => {
