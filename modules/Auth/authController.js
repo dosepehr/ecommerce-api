@@ -53,3 +53,19 @@ exports.verifyOtp = expressAsyncHandler(async (req, res, next) => {
         return res.status(200).json({ message: 'welcome', token });
     }
 });
+
+exports.completeData = expressAsyncHandler(async (req, res, next) => {
+    const { email, name, password } = req.body;
+    const user = req.user;
+    user.email = email;
+    user.name = name;
+    user.password = password;
+    user.role = 'user';
+    await user.save();
+    const token = signToken({ id: user._id });
+
+    res.status(200).json({
+        message: 'User data updated successfully',
+        token,
+    });
+});

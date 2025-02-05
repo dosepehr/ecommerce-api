@@ -1,6 +1,7 @@
 const expressAsyncHandler = require('express-async-handler');
 const { verifyToken } = require('../../utils/funcs/token');
 const AppError = require('../../utils/Classes/AppError');
+const User = require('../../modules/User/userModel');
 exports.protect = expressAsyncHandler(async (req, res, next) => {
     // 1) Getting token and check of it's there
     let token;
